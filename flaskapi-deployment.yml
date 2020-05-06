@@ -1,0 +1,35 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flaskapi-deployment
+  labels:
+    app: flaskapi
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: flaskapi
+  template:
+    metadata:
+      labels:
+        app: flaskapi
+    spec:
+      containers:
+        - name: flaskapi
+          image: docker-python-flask:1.0.0
+          ports:
+            - containerPort: 5000
+          env:
+            - name: db_username
+              valueFrom:
+                secretKeyRef:
+                  name: flaskapi-secrets
+                  key: db_username
+            - name: db_password
+              valueFrom:
+                secretKeyRef:
+                  name: flaskapi-secrets
+                  key: db_password
+            - name: db_name
+              value: flaskapi_demo
